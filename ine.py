@@ -43,16 +43,38 @@ def write_into_binary_file(filename, data):
 def read_config(config_file):
     with open(config_file, "r") as f:
         config = json.loads(f.read().strip())
-        username = config["username"]
-        password = config["password"]
+        username = config.get("username")
+        password = config.get("password")
 
-        return username, password
+        if username and password:
+            return username, password
+
+        else:
+            logger.opt(colors=True).error(
+                f"No credentials were entered in <cyan>{config_file}</cyan>"
+            )
+            exit()
 
 
 def read_all_courses_file(all_courses_file):
     with open(all_courses_file, "r", encoding="utf-8") as f:
         course_contents = json.loads(f.read().strip())
         return course_contents
+
+
+def banner():
+    banner_text = r"""{}
+██╗███╗   ██╗███████╗    ██████╗ ██╗     
+██║████╗  ██║██╔════╝    ██╔══██╗██║     
+{}██║██╔██╗ ██║█████╗█████╗██║  ██║██║     
+██║██║╚██╗██║██╔══╝╚════╝██║  ██║██║     
+{}██║██║ ╚████║███████╗    ██████╔╝███████╗
+╚═╝╚═╝  ╚═══╝╚══════╝    ╚═════╝ ╚══════╝
+""".format(
+        Fore.CYAN, Fore.YELLOW, Fore.BLUE
+    )
+
+    print(banner_text)
 
 
 def debug_requests(request_object):
@@ -83,7 +105,15 @@ def login():
         authorization_token = login_response["data"]["tokens"]["data"]["Bearer"]
         request_headers["Authorization"] = f"Bearer {authorization_token}"
 
+    elif login_request.status_code == 401:
+        login_response = json.loads(login_request.text)
+
+        if login_response.get("error").get("code") == "username_or_password_invalid":
+            logger.opt(colors=True).error("Wrong credentials specified!")
+            exit()
+
     else:
+        debug_requests(login_request)
         logger.opt(colors=True).error("There was an issue logging in!")
 
 
@@ -981,6 +1011,7 @@ def download_course(course_dict):
 
 
 def main():
+    banner()
     args, parser = addArguments()
 
     logger.remove()
