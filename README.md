@@ -183,6 +183,11 @@ Necessary arguments:
 <img src="https://user-images.githubusercontent.com/18597330/179954527-c6709ede-6172-4b0e-a548-dab47d4233d6.png" />
 
 
+### Credits
+
+- Inspired as always by downloaders of [r0oth3x49](https://github.com/r0oth3x49)
+- Some ideas were taken from [Jayapraveen's downloader](https://github.com/Jayapraveen/INE-courses-downloader). Though his script is nice, it has a lot of bugs, I spent almost 2 holidays fixing those and then thought of writing my own. 
+
 ### Note 
 Please use the script w.r.t the usage guidelines of INE. Do not exhaust their backend servers. Do not dump and share the courses publicly. 
 
