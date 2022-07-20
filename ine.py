@@ -1006,7 +1006,6 @@ def download_course(course_dict):
     # Writing json of the course into it's directory for better debugging/user information later on
     logger.opt(colors=True).success(f"Completed downloading of {name}")
     write_into_file(f"{name}/{slug}.json", "w+", json.dumps(course_dict, indent=4, default=str))
-
     print()
 
 
