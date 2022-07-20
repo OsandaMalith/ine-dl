@@ -1082,6 +1082,7 @@ def main():
 
         elif args.category:
             category_courses = fetch_specific_category_courses(user_subscriptions, args.category)
+            print()
             # for course in category_courses:
             #     download_course(course)
 
