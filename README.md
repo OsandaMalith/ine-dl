@@ -27,27 +27,103 @@
 - Python module `requests`
 - Python module `loguru`
 
+### How does this script work? (if you want to understand the code)
+
+The script was written based on the APIs of **iOS application** to prevent Google's Invisible captcha implementation hence you will see a header (`X-Ine-Mobile`) hard coded in the script with an static API key required for the IOS API calls to succeed (this is hard-coded in the iOS application binary and can easily be grepped). 
+
+**Initialization:**
+1. The script starts with loading the credentials (username/email and password) from config.json file
+2. It then proceeds to login into the INE account and loading the JWT token into Authorization header to use in next API calls
+3. The script then does an API call to download the metadata of all the INE courses present and write into `all_courses_metadata.json`
+4. It then checks for the subscriptions the user account has and filters the courses fetched and creates another file named `all_courses_with_access.json` with the data
+
+**Downloading of videos:**
+1. Does an API call to fetch the video name, url, and checks if subtitle URL is present and downloads all those!
+2. Also filters based on the resolution and goes from 1080, 720 -> low
+
+**Downloading of slides** (format looks like the [following](https://user-images.githubusercontent.com/18597330/179960035-7a00d727-ebc0-4744-be50-356f53ad03af.png)):
+1. An initial request returns the slide metadata containing a link to `index.html` file (with cookies in response headers)
+2. We store the cookies and then download `browsersupport.js` and `player.js` files (static can be reused with other slides)
+3. INE uses a mix of `css`, `js`, `woff`, and, `pngs` but all have incrementable file names (format differs for text and binary files)
+4. Wrote a `while loop` until the incremented file returns 404 and then stops the downloading of category: `CSS/JS/WOFF/PNG`
+5. It also downloads any attachments added with the slides.
+
+**Downloading of quizzes** (with right answers):
+1. This was quite a pickle, looked into the quiz solving API call, first request returns a JSON containing the whole quiz content
+2. Second request is a `PUT` request with right/wrong answers from user, in response to this, the JSON body now contains a new key `is_correct` containing the right answer
+3. Wrote logic for posting the JSON body taken from the initial request, modified it to required standards, the server doesn't need options to be selected either
+4. The `PUT` request then returns the right answers, *two files are made with no answers and correct answers*.
+
+**Downloading of exercises**:
+1. This was quite simple, an API call returns the contents in both `Markdown` and `HTML` format
+2. For ease of cross-platform usage, I've only stored the `HTML` content with `_exercise_` in file name.
+
+**Downloading of labs**:
+1. You lose an edge here, in most of the cases, the labs are stored on INE cloud. 
+2. The script only stores the `HTML content` of it (if present)
+
+
+### Features
+- Resume capability for a course video
+- Download subtitles for the videos (if present)
+- Download all courses without any prompt (option: -a / --all)
+- Downloading slides, labs, exercises, quizzes, and, videos
 
 ### Install modules
 
 	pip3 install -r requirements.txt
 	
-
 ### Works on
 
 - ~Windows 7/8/8.1~ (It should work fine in WSL but not in cmd/PS)
 - Ubuntu 18.04 LTS
 - Ubuntu 20.04 LTS
  
-
 ### Download ine-dl
 
 You can download the latest version of ine-dl by cloning the GitHub repository.
 
 	git clone https://github.com/Anon-Exploiter/ine-dl --depth 1
 
+### Help menu 
 
-### Usage
+```bash
+┌──(umar_0x01@b0x)-[~/scripts/ine-dl]
+└─$ python3 ine.py
+
+██╗███╗   ██╗███████╗    ██████╗ ██╗     
+██║████╗  ██║██╔════╝    ██╔══██╗██║     
+██║██╔██╗ ██║█████╗█████╗██║  ██║██║     
+██║██║╚██╗██║██╔══╝╚════╝██║  ██║██║     
+██║██║ ╚████║███████╗    ██████╔╝███████╗
+╚═╝╚═╝  ╚═══╝╚══════╝    ╚═════╝ ╚══════╝
+
+Usage: python3 ine.py --all
+
+Help:
+  -h, --help            show this help message and exit
+
+Basic arguments (one or more):
+  -l LOG, --log-output LOG
+                        Logs output of the script (if required later)
+  -lct, --list-categories
+                        List all categories
+  -lcc, --list-courses  List all courses
+  -lcct LCCT, --list-categories-courses LCCT
+                        List all courses of a specific category UUID from -lct
+
+Necessary arguments:
+  -p PROCESSES, --processes PROCESSES
+                        Number of parallel processes to launch (2 if nothing specified)
+  -c COURSE, --course COURSE
+                        Download course based on provided UUID from -lcc
+  -ct CATEGORY, --category CATEGORY
+                        Download whole category based on provided UUID from -lct
+  -a, --all             Download all courses of all categories
+
+```
+
+### Arguments usage
 
 ***Running the Script (displays help menu with no args)***
 
@@ -83,7 +159,6 @@ You can download the latest version of ine-dl by cloning the GitHub repository.
 	python ine-dl.py -ct {category_id}
     python ine-dl.py -ct {category_id} -p 2
 	
-
 ### To DOs
 - [x] Fetch all the courses and write into a file
 - [x] Fetch & Match the subscriptions and then put stuff into the course file
