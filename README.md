@@ -32,14 +32,14 @@
 The script was written based on the APIs of **iOS application** to prevent Google's Invisible captcha implementation hence you will see a header (`X-Ine-Mobile`) hard coded in the script with an static API key required for the IOS API calls to succeed (this is hard-coded in the iOS application binary and can easily be grepped). 
 
 **Initialization:**
-1. The script starts with loading the credentials (username/email and password) from config.json file
-2. It then proceeds to login into the INE account and loading the JWT token into Authorization header to use in next API calls
+1. The script starts with loading the credentials (`username/email` and `password`) from `config.json` file
+2. It then proceeds to login into the INE account and loading the `JWT` token into Authorization header to use in next API calls
 3. The script then does an API call to download the metadata of all the INE courses present and write into `all_courses_metadata.json`
 4. It then checks for the subscriptions the user account has and filters the courses fetched and creates another file named `all_courses_with_access.json` with the data
 
 **Downloading of videos:**
-1. Does an API call to fetch the video name, url, and checks if subtitle URL is present and downloads all those!
-2. Also filters based on the resolution and goes from 1080, 720 -> low
+1. Does an API call to fetch the `video name`, `url`, and checks if subtitle URL is present and downloads all those!
+2. Also *filters based on the resolution* and goes from 1080, 720 -> low
 
 **Downloading of slides** (format looks like the [following](https://user-images.githubusercontent.com/18597330/179960035-7a00d727-ebc0-4744-be50-356f53ad03af.png)):
 1. An initial request returns the slide metadata containing a link to `index.html` file (with cookies in response headers)
@@ -49,7 +49,7 @@ The script was written based on the APIs of **iOS application** to prevent Googl
 5. It also downloads any attachments added with the slides.
 
 **Downloading of quizzes** (with right answers):
-1. This was quite a pickle, looked into the quiz solving API call, first request returns a JSON containing the whole quiz content
+1. This was quite a pickle, looked into the quiz solving API call, first request returns a `JSON` containing the whole quiz content
 2. Second request is a `PUT` request with right/wrong answers from user, in response to this, the JSON body now contains a new key `is_correct` containing the right answer
 3. Wrote logic for posting the JSON body taken from the initial request, modified it to required standards, the server doesn't need options to be selected either
 4. The `PUT` request then returns the right answers, *two files are made with no answers and correct answers*.
