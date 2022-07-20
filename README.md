@@ -109,5 +109,6 @@ You can download the latest version of ine-dl by cloning the GitHub repository.
 
 
 ### Note 
-<pre><code>Please use the script w.r.t the usage guidelines of INE. Do not exhaust their backend servers. Do not dump and share the courses publicly. Please use this on your own risk, If your account is blocked by the usage of this script, I won't be responsible. 
-</code></pre>
+Please use the script w.r.t the usage guidelines of INE. Do not exhaust their backend servers. Do not dump and share the courses publicly. 
+
+Please use this on your own risk, If your account is blocked by the usage of this script, I won't be responsible. 
