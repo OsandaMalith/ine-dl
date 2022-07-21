@@ -26,6 +26,7 @@
 - Python module `requests_toolbelt`
 - Python module `requests`
 - Python module `loguru`
+- External downloader `aria2`
 
 ### How does this script work? (if you want to understand the code)
 
@@ -72,6 +73,10 @@ The script was written based on the APIs of **iOS application** to prevent Googl
 ### Install modules
 
 	pip3 install -r requirements.txt
+	
+### Install aria2
+	
+	sudo apt install aria2
 	
 ### Works on
 
